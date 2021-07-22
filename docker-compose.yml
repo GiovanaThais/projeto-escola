@@ -1,0 +1,37 @@
+version: '3.4'
+
+services:
+  projetoescola:
+    container_name: projetoescola
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    command: tail -f /dev/null
+    ports:
+      - 8000:8000
+    volumes:
+        - .:/app 
+    networks:
+        - private
+    depends_on:
+        - database
+
+  database:
+      container_name: escola_database
+      image: postgres:13
+      ports:
+          - 5432:5432
+      volumes:
+          - projetoescola_pgdata:/var/lib/postgresql/data
+      networks:
+          - private
+      environment:
+          POSTGRES_USER: ${DATABASE_USER}
+          POSTGRES_PASSWORD: ${DATABASE_PASS}
+          POSTGRES_DB: ${DATABASE_NAME}
+
+networks:
+    private:
+
+volumes:  
+    projetoescola_pgdata:

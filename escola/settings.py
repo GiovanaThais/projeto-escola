@@ -13,6 +13,7 @@ Token = 845f54ccead17595b5ea12405729216e0799becf
 """
 
 import os
+from decouple import config
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -22,7 +23,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'ze$)p9oxp*tgky-n#zx-43_$2af^gn-kr2ohnlya^25cpyzwr1'
+SECRET_KEY = config("SECRET_KEY")
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -81,8 +83,12 @@ WSGI_APPLICATION = 'escola.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': config("DATABASE_NAME", cast=str),
+        'USER': config("DATABASE_USER", cast=str),
+        'PASSWORD': config("DATABASE_PASS", cast=str),
+        'HOST': config("DATABASE_HOST", cast=str),
+        'PORT': config("DATABASE_PORT", cast=str)
     }
 }
 
@@ -130,7 +136,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        # 'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
@@ -148,3 +154,5 @@ REST_FRAMEWORK = {
     },
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
 }
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
